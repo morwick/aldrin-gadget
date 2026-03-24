@@ -17,6 +17,9 @@ export default function ProductDetail({ params }) {
   const [isZoomed, setIsZoomed] = useState(false);
   const [currentUrl, setCurrentUrl] = useState('');
 
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
   useEffect(() => {
     if (id) {
       fetchProduct();
@@ -52,6 +55,27 @@ export default function ProductDetail({ params }) {
     e?.stopPropagation();
     if (product?.images && product.images.length > 0) {
       setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+    }
+  };
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEndHandler = (e) => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50;
+    
+    if (distance > minSwipeDistance) {
+      nextImage(e);
+    } else if (distance < -minSwipeDistance) {
+      prevImage(e);
     }
   };
 
@@ -94,21 +118,24 @@ export default function ProductDetail({ params }) {
           <img 
             src={images[currentImageIndex]} 
             alt="Zoomed product" 
-            className="max-w-[95vw] max-h-[90vh] object-contain select-none drop-shadow-2xl mix-blend-multiply dark:mix-blend-normal"
+            className="max-w-[95vw] max-h-[90vh] object-contain select-none drop-shadow-2xl mix-blend-multiply dark:mix-blend-normal touch-pan-y"
             onClick={(e) => e.stopPropagation()} 
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEndHandler}
           />
           
           {images.length > 1 && (
             <>
               <button 
                 onClick={prevImage}
-                className="absolute left-6 top-1/2 -translate-y-1/2 bg-black/5 hover:bg-black/10 text-black dark:bg-white/10 dark:hover:bg-white/20 dark:text-white p-4 rounded-full backdrop-blur transition-all active:scale-95 z-50"
+                className="hidden sm:block absolute left-6 top-1/2 -translate-y-1/2 bg-black/5 hover:bg-black/10 text-black dark:bg-white/10 dark:hover:bg-white/20 dark:text-white p-4 rounded-full backdrop-blur transition-all active:scale-95 z-50"
               >
                 <ChevronLeft className="w-8 h-8" />
               </button>
               <button 
                 onClick={nextImage}
-                className="absolute right-6 top-1/2 -translate-y-1/2 bg-black/5 hover:bg-black/10 text-black dark:bg-white/10 dark:hover:bg-white/20 dark:text-white p-4 rounded-full backdrop-blur transition-all active:scale-95 z-50"
+                className="hidden sm:block absolute right-6 top-1/2 -translate-y-1/2 bg-black/5 hover:bg-black/10 text-black dark:bg-white/10 dark:hover:bg-white/20 dark:text-white p-4 rounded-full backdrop-blur transition-all active:scale-95 z-50"
               >
                 <ChevronRight className="w-8 h-8" />
               </button>
