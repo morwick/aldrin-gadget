@@ -250,7 +250,7 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
                 <button 
                   type="button"
                   onClick={() => removeExistingImage(index)}
-                  className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md hover:bg-red-600"
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full shadow-md hover:bg-red-600 hover:scale-110 transition-all z-10"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -263,7 +263,7 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
                 <button 
                   type="button"
                   onClick={() => removeNewImage(index)}
-                  className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md hover:bg-red-600"
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full shadow-md hover:bg-red-600 hover:scale-110 transition-all z-10"
                 >
                   <X className="w-4 h-4" />
                 </button>

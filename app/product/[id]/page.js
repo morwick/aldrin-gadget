@@ -124,7 +124,7 @@ export default function ProductDetail({ params }) {
         <div className="bg-white dark:bg-[#121212] rounded-[2.5rem] p-6 md:p-12 lg:p-16 border border-gray-100 dark:border-gray-800 shadow-sm">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-start">
             
-            <div className="w-full lg:w-1/2 top-8 sticky">
+            <div className="w-full lg:w-1/2">
               <div 
                 className="relative w-full pt-[100%] bg-gray-50 dark:bg-[#1a1a1a] rounded-[2rem] overflow-hidden group cursor-zoom-in"
                 onClick={() => setIsZoomed(true)}
