@@ -59,11 +59,17 @@ export default function ProductDetail({ params }) {
   };
 
   const onTouchStart = (e) => {
+    if (e.touches && e.touches.length > 1) return;
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
 
   const onTouchMove = (e) => {
+    if (e.touches && e.touches.length > 1) {
+      setTouchStart(null);
+      setTouchEnd(null);
+      return;
+    }
     setTouchEnd(e.targetTouches[0].clientX);
   };
 
@@ -77,6 +83,9 @@ export default function ProductDetail({ params }) {
     } else if (distance < -minSwipeDistance) {
       prevImage(e);
     }
+    
+    setTouchStart(null);
+    setTouchEnd(null);
   };
 
   if (loading) {
