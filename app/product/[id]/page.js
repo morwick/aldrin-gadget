@@ -127,7 +127,7 @@ export default function ProductDetail({ params }) {
           <img 
             src={images[currentImageIndex]} 
             alt="Zoomed product" 
-            className="max-w-[95vw] max-h-[90vh] object-contain select-none drop-shadow-2xl mix-blend-multiply dark:mix-blend-normal touch-pan-y"
+            className="max-w-[95vw] max-h-[90vh] object-contain select-none drop-shadow-2xl mix-blend-multiply dark:mix-blend-normal"
             onClick={(e) => e.stopPropagation()} 
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
