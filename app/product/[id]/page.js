@@ -15,11 +15,13 @@ export default function ProductDetail({ params }) {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState('');
 
   useEffect(() => {
     if (id) {
       fetchProduct();
     }
+    setCurrentUrl(window.location.href);
   }, [id]);
 
   const fetchProduct = async () => {
@@ -237,7 +239,7 @@ export default function ProductDetail({ params }) {
               </div>
 
               <a 
-                href={`https://wa.me/6281267250095?text=${encodeURIComponent(`Halo, saya tertarik untuk membeli produk *${product.name}*`)}`}
+                href={currentUrl ? `https://wa.me/6281267250095?text=${encodeURIComponent(`Halo, saya tertarik untuk membeli produk *${product.name}*\n\nLink Produk: ${currentUrl}`)}` : '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center w-full sm:w-auto px-10 py-4 bg-[#25D366] hover:bg-[#1EBE57] text-white rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-xl shadow-[#25D366]/20"
