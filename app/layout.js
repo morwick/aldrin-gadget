@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Aldrin Gadget | Modern Apple-style E-Commerce",
+  title: "Aldrin Gadget",
   description: "Premium gadgets and electronics showcase",
 };
 
