@@ -7,14 +7,18 @@ CREATE TABLE IF NOT EXISTS public.products (
   price numeric NOT NULL,
   storage text NOT NULL,
   warranty text NOT NULL,
+  color text,
+  description text,
   images text[] DEFAULT '{}',
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Note: Jika Anda sebelumnya menggunakan "image_url", silakan jalankan query di bawah ini:
+-- Note: Jika Anda sebelumnya menggunakan "image_url" atau belum memiliki "color"/"description", jalankan query di bawah ini:
 -- ALTER TABLE public.products ADD COLUMN images text[] DEFAULT '{}';
 -- UPDATE public.products SET images = ARRAY[image_url] WHERE image_url IS NOT NULL;
 -- ALTER TABLE public.products DROP COLUMN image_url;
+-- ALTER TABLE public.products ADD COLUMN color text;
+-- ALTER TABLE public.products ADD COLUMN description text;
 
 -- 2. Setup RLS (Row Level Security)
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import toast from 'react-hot-toast';
 import { UploadCloud, CheckCircle2, X } from 'lucide-react';
+import imageCompression from 'browser-image-compression';
 
 export default function ProductForm({ initialData = null, onSubmitSuccess, onCancel }) {
   const [loading, setLoading] = useState(false);
@@ -12,11 +13,11 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
     price: initialData?.price || '',
     storage: initialData?.storage || '128GB',
     warranty: initialData?.warranty || '1 Year',
+    color: initialData?.color || '',
+    description: initialData?.description || '',
   });
   
-  // existing images array from DB
   const [existingImages, setExistingImages] = useState(initialData?.images || []);
-  // new files to upload
   const [imageFiles, setImageFiles] = useState([]);
 
   const STORAGE_OPTIONS = ['64GB', '128GB', '256GB', '512GB', '1TB'];
@@ -29,7 +30,6 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files);
-      // Append new files to state, keeping references for ObjectURLs
       const filesWithPreviews = filesArray.map(file => ({
         file,
         preview: URL.createObjectURL(file)
@@ -47,13 +47,28 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
   };
 
   const uploadImage = async (file) => {
-    const fileExt = file.name.split('.').pop();
+    const options = {
+      maxSizeMB: 0.1,
+      maxWidthOrHeight: 1280,
+      useWebWorker: true,
+      initialQuality: 0.8
+    };
+    
+    let compressedFile;
+    try {
+      compressedFile = await imageCompression(file, options);
+    } catch (err) {
+      console.warn("Compression failed, using original file", err);
+      compressedFile = file;
+    }
+
+    const fileExt = compressedFile.name.split('.').pop() || 'jpg';
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
     const filePath = `${fileName}`;
 
     const { error: uploadError } = await supabase.storage
       .from('products')
-      .upload(filePath, file);
+      .upload(filePath, compressedFile);
 
     if (uploadError) {
       throw uploadError;
@@ -71,9 +86,8 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
     setLoading(true);
 
     try {
-      // Validate
       if (!formData.name || !formData.price || !formData.storage || !formData.warranty) {
-        throw new Error('All fields are required');
+        throw new Error('All required fields must be filled');
       }
       if (isNaN(Number(formData.price))) {
         throw new Error('Price must be a valid number');
@@ -82,7 +96,6 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
       let finalImages = [...existingImages];
 
       if (imageFiles.length > 0) {
-        // Upload new images
         const uploadPromises = imageFiles.map(img => uploadImage(img.file));
         const uploadedUrls = await Promise.all(uploadPromises);
         finalImages = [...finalImages, ...uploadedUrls];
@@ -98,10 +111,11 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
         storage: formData.storage,
         warranty: formData.warranty,
         images: finalImages,
+        color: formData.color,
+        description: formData.description,
       };
 
       if (initialData?.id) {
-        // Update product
         const { error } = await supabase
           .from('products')
           .update(productPayload)
@@ -110,7 +124,6 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
         if (error) throw error;
         toast.success('Product updated successfully');
       } else {
-        // Insert product
         const { error } = await supabase
           .from('products')
           .insert([productPayload]);
@@ -123,15 +136,13 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
         onSubmitSuccess();
       }
       
-      // Reset form if it is a new insertion without explicit success handler redirect
       if (!initialData && !onSubmitSuccess) {
-          setFormData({ name: '', price: '', storage: '128GB', warranty: '1 Year' });
+          setFormData({ name: '', price: '', storage: '128GB', warranty: '1 Year', color: '', description: '' });
           setImageFiles([]);
           setExistingImages([]);
       }
 
     } catch (error) {
-      console.error(error);
       toast.error(error.message || 'An error occurred while saving.');
     } finally {
       setLoading(false);
@@ -143,12 +154,13 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
       
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Name</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Name <span className="text-red-500">*</span></label>
           <input 
             type="text" 
             name="name" 
             value={formData.name} 
             onChange={handleChange}
+            required
             className="w-full px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             placeholder="e.g. iPhone 15 Pro Max"
           />
@@ -156,7 +168,7 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price (IDR)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price (IDR) <span className="text-red-500">*</span></label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
               <input 
@@ -164,6 +176,7 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
                 name="price" 
                 value={formData.price} 
                 onChange={handleChange}
+                required
                 step="1"
                 min="0"
                 className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
@@ -173,7 +186,7 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Storage</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Storage <span className="text-red-500">*</span></label>
             <select 
               name="storage" 
               value={formData.storage} 
@@ -187,23 +200,50 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
           </div>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Warranty <span className="text-red-500">*</span></label>
+            <input 
+              type="text" 
+              name="warranty" 
+              value={formData.warranty} 
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              placeholder="e.g. 1 Year Official Warranty"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color (Optional)</label>
+            <input 
+              type="text" 
+              name="color" 
+              value={formData.color} 
+              onChange={handleChange}
+              className="w-full px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              placeholder="e.g. Space Black"
+            />
+          </div>
+        </div>
+        
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Warranty</label>
-          <input 
-            type="text" 
-            name="warranty" 
-            value={formData.warranty} 
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description (Optional)</label>
+          <textarea 
+            name="description" 
+            value={formData.description} 
             onChange={handleChange}
-            className="w-full px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-            placeholder="e.g. 1 Year Official Warranty"
-          />
+            rows="4"
+            className="w-full px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-y"
+            placeholder="Write a detailed product description here..."
+          ></textarea>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Images</label>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            {/* Existing Images */}
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center justify-between">
+            <span>Product Images <span className="text-red-500">*</span></span>
+            <span className="text-xs font-semibold text-blue-600 bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded">Auto Compressed ~100kb</span>
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 mt-1">
             {existingImages.map((url, index) => (
               <div key={`existing-${index}`} className="relative group w-full pt-[100%] rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
                 <img src={url} alt={`Existing ${index}`} className="absolute inset-0 w-full h-full object-contain p-2 bg-gray-50 dark:bg-[#1a1a1a] mix-blend-multiply dark:mix-blend-normal" />
@@ -217,7 +257,6 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
               </div>
             ))}
 
-            {/* New Images */}
             {imageFiles.map((img, index) => (
               <div key={`new-${index}`} className="relative group w-full pt-[100%] rounded-xl overflow-hidden border-2 border-green-500/50">
                 <img src={img.preview} alt={`New upload ${index}`} className="absolute inset-0 w-full h-full object-contain p-2 bg-gray-50 dark:bg-[#1a1a1a] mix-blend-multiply dark:mix-blend-normal" />
@@ -234,7 +273,6 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
               </div>
             ))}
             
-            {/* Upload Button */}
             <label className="relative cursor-pointer hover:opacity-80 transition-opacity">
               <div className="w-full pt-[100%] relative rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 hover:bg-gray-100 dark:bg-gray-900/30 dark:hover:bg-gray-800/50 flex flex-col items-center justify-center text-gray-400">
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
@@ -245,8 +283,6 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
               <input type="file" multiple className="sr-only" accept="image/*" onChange={handleImageChange} />
             </label>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400">You can select multiple images. PNG, JPG, WEBP up to 5MB.</p>
-
         </div>
       </div>
 
