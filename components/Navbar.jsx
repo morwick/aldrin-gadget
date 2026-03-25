@@ -16,10 +16,7 @@ export default function Navbar() {
             <img src="/logo.png" alt="Logo Toko" className="h-8 w-auto group-hover:scale-105 transition-transform duration-300" />
 
             {/* Ubah teksnya bebas, atau bisa juga kamu hapus jika logonya sudah memuat tulisan */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1.5 items-start justify-center leading-[1.1] sm:leading-normal text-black dark:text-white">
-              <span className="font-bold tracking-tight text-lg sm:text-xl">Aldrin</span>
-              <span className="font-bold tracking-tight text-lg sm:text-xl">Gadget</span>
-            </div>
+            <span className="font-semibold tracking-tight text-lg sm:text-xl text-black dark:text-white">Aldrin Gadget</span>
           </Link>
 
 

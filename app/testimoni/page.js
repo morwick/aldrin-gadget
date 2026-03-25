@@ -94,7 +94,7 @@ export default async function TestimonialsPage() {
             className="break-inside-avoid relative group rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800"
           >
             {/* Image */}
-            <div className="cursor-pointer relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-black/80 before:via-black/20 before:to-transparent before:z-10 before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300">
+            <div className="cursor-pointer relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-black/80 before:via-black/20 before:to-transparent before:z-10 before:opacity-100 sm:before:opacity-0 sm:group-hover:before:opacity-100 before:transition-opacity before:duration-300">
               <img 
                 src={item.image_url} 
                 alt={`Testimoni ${item.customer_name || 'Pelanggan'}`} 
@@ -103,8 +103,8 @@ export default async function TestimonialsPage() {
               />
             </div>
 
-            {/* Overlay Info (shows on hover) */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 z-20 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end">
+            {/* Overlay Info */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-20 translate-y-0 opacity-100 sm:translate-y-4 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end pointer-events-none">
               <div className="flex items-center gap-1 text-yellow-400 mb-2">
                 <Star className="w-4 h-4 fill-current" />
                 <Star className="w-4 h-4 fill-current" />
