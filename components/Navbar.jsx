@@ -29,7 +29,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/testimoni"
-              className={`hidden sm:block px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${pathname === '/testimoni' ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${pathname === '/testimoni' ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
             >
               Testimoni
             </Link>
