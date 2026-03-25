@@ -184,20 +184,21 @@ export default function AdminTestimonialDashboard() {
                 <div key={item.id} className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-[3/4] border border-gray-200 dark:border-gray-800">
                   <img src={item.image_url} alt="Testimonial" className="w-full h-full object-cover" />
                   
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
-                    <div className="flex justify-end gap-2">
-                      <button onClick={() => handleEdit(item)} className="p-2 bg-white/20 hover:bg-white rounded-full text-white hover:text-black transition-colors backdrop-blur">
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDelete(item.id)} disabled={isDeleting === item.id} className="p-2 bg-red-500/80 hover:bg-red-600 rounded-full text-white transition-colors backdrop-blur disabled:opacity-50">
-                        {isDeleting === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                      </button>
-                    </div>
-                    
+                  {/* Action Buttons (Always Visible for Mobile Support) */}
+                  <div className="absolute top-3 right-3 flex justify-end gap-2 z-10 transition-opacity">
+                    <button onClick={() => handleEdit(item)} className="p-2 bg-black/50 hover:bg-white rounded-full text-white hover:text-black transition-colors backdrop-blur shadow-md">
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleDelete(item.id)} disabled={isDeleting === item.id} className="p-2 bg-red-500/80 hover:bg-red-600 rounded-full text-white transition-colors backdrop-blur shadow-md disabled:opacity-50">
+                      {isDeleting === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  
+                  {/* Info Overlay (Gradient at the bottom) */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 pt-10 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10">
                     <div className="text-white">
-                      <p className="font-bold text-sm truncate">{item.customer_name || 'No Name'}</p>
-                      <p className="text-xs text-gray-300 truncate">{item.product_name || 'No Product'}</p>
+                      <p className="font-bold text-sm truncate drop-shadow-md">{item.customer_name || 'No Name'}</p>
+                      <p className="text-xs text-gray-200 truncate drop-shadow-md mt-0.5">{item.product_name || 'No Product'}</p>
                     </div>
                   </div>
                 </div>
