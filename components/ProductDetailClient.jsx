@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 import { ArrowLeft, HardDrive, Shield, CheckCircle2, ChevronLeft, ChevronRight, Palette, X, ZoomIn } from 'lucide-react';
 import Link from 'next/link';
+import InvoiceGenerator from './InvoiceGenerator';
 
 export default function ProductDetailClient({ initialProduct }) {
   const [product, setProduct] = useState(initialProduct);
@@ -12,11 +14,18 @@ export default function ProductDetailClient({ initialProduct }) {
 
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     setCurrentUrl(window.location.href);
-    // If the prop changes (e.g. client-side navigation), update state
     setProduct(initialProduct);
+
+    // Check if the current user is an admin
+    const checkAdmin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) setIsAdmin(true);
+    };
+    checkAdmin();
   }, [initialProduct]);
 
   if (!product) return null; // Handled by server component mostly
@@ -232,14 +241,18 @@ export default function ProductDetailClient({ initialProduct }) {
                 </div>
               </div>
 
-              <a 
-                href={currentUrl ? `https://wa.me/6281267250095?text=${encodeURIComponent(`Halo, saya tertarik untuk membeli produk *${product.name}*\n\nLink Produk: ${currentUrl}`)}` : '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-full sm:w-auto px-10 py-4 bg-[#25D366] hover:bg-[#1EBE57] text-white rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-xl shadow-[#25D366]/20"
-              >
-                Beli via WhatsApp
-              </a>
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
+                <a 
+                  href={currentUrl ? `https://wa.me/6281267250095?text=${encodeURIComponent(`Halo, saya tertarik untuk membeli produk *${product.name}*\n\nLink Produk: ${currentUrl}`)}` : '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-full sm:w-auto px-10 py-4 bg-[#25D366] hover:bg-[#1EBE57] text-white rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-xl shadow-[#25D366]/20"
+                >
+                  Beli via WhatsApp
+                </a>
+                
+                {isAdmin && <InvoiceGenerator product={product} />}
+              </div>
             </div>
             
           </div>

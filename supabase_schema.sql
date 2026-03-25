@@ -76,3 +76,54 @@ CREATE POLICY "Allow authenticated users to delete product images"
 ON storage.objects FOR DELETE
 TO authenticated
 USING (bucket_id = 'products');
+
+-- 6. Create the testimonials table
+CREATE TABLE IF NOT EXISTS public.testimonials (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  customer_name text,
+  product_name text,
+  image_url text NOT NULL,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 7. Setup RLS for testimonials
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access to testimonials"
+ON public.testimonials FOR SELECT
+TO public
+USING (true);
+
+CREATE POLICY "Allow authenticated users to insert testimonials"
+ON public.testimonials FOR INSERT
+TO authenticated
+WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to update testimonials"
+ON public.testimonials FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to delete testimonials"
+ON public.testimonials FOR DELETE
+TO authenticated
+USING (true);
+
+-- 8. Storage Bucket for Testimonial Images
+INSERT INTO storage.buckets (id, name, public) VALUES ('testimonials', 'testimonials', true) ON CONFLICT DO NOTHING;
+
+CREATE POLICY "Allow public read access to testimonial images"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'testimonials');
+
+CREATE POLICY "Allow authenticated users to upload testimonial images"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'testimonials');
+
+CREATE POLICY "Allow authenticated users to delete testimonial images"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'testimonials');

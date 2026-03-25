@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import ProductForm from '@/components/ProductForm';
 import { Plus, Edit2, Trash2, LogOut, Package } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const [session, setSession] = useState(null);
@@ -105,6 +106,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      
+      {/* Navigation Tabs */}
+      <div className="flex gap-4 mb-8">
+        <div className="px-5 py-2.5 rounded-full text-sm font-semibold bg-black text-white shadow-lg shadow-black/10 cursor-default">
+          📦 Kelola Produk
+        </div>
+        <Link href="/admin/testimoni" className="px-5 py-2.5 rounded-full text-sm font-semibold text-gray-500 hover:text-black hover:bg-gray-100 transition-all">
+          📸 Kelola Testimoni
+        </Link>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Admin Dashboard</h1>
