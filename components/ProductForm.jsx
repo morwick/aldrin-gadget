@@ -48,8 +48,8 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
 
   const uploadImage = async (file) => {
     const options = {
-      maxSizeMB: 0.1,
-      maxWidthOrHeight: 1280,
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
       useWebWorker: true,
       initialQuality: 0.8
     };
@@ -241,7 +241,7 @@ export default function ProductForm({ initialData = null, onSubmitSuccess, onCan
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center justify-between">
             <span>Product Images <span className="text-red-500">*</span></span>
-            <span className="text-xs font-semibold text-blue-600 bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded">Auto Compressed ~100kb</span>
+            <span className="text-xs font-semibold text-blue-600 bg-blue-50 dark:bg-blue-900/40 px-2 py-1 rounded">Auto Compressed ~1MB</span>
           </label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 mt-1">
             {existingImages.map((url, index) => (

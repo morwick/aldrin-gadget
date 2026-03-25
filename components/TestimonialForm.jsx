@@ -39,8 +39,8 @@ export default function TestimonialForm({ initialData = null, onSubmitSuccess, o
 
   const uploadImage = async (file) => {
     const options = {
-      maxSizeMB: 0.1,
-      maxWidthOrHeight: 1280,
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
       useWebWorker: true,
       initialQuality: 0.8
     };
