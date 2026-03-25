@@ -23,25 +23,25 @@ export default function Navbar() {
           </Link>
 
 
-          <div className="flex items-center gap-1 sm:gap-4">
+          <div className="flex items-center gap-0.5 sm:gap-4 shrink-0">
             <Link
               href="/"
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${pathname === '/' ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
+              className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${pathname === '/' ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
             >
               Showcase
             </Link>
             <Link
               href="/testimoni"
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${pathname === '/testimoni' ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
+              className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${pathname === '/testimoni' ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
             >
               Testimoni
             </Link>
             <Link
               href="/admin"
-              className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-1.5 transition-all duration-300 ${pathname?.startsWith('/admin') ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
+              className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-all duration-300 ${pathname?.startsWith('/admin') ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white' : 'text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/50'}`}
             >
-              <ShieldCheck className="w-4 h-4" />
-              Admin
+              <ShieldCheck className="w-5 h-5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Admin</span>
             </Link>
           </div>
         </div>
