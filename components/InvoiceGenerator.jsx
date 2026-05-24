@@ -14,8 +14,9 @@ export default function InvoiceGenerator({ product }) {
     try {
       const element = invoiceRef.current;
       
-      const imgData = await htmlToImage.toPng(element, { 
+      const imgData = await htmlToImage.toJpeg(element, { 
         pixelRatio: 2, 
+        quality: 0.8,
         skipFonts: false
       });
       
@@ -26,7 +27,7 @@ export default function InvoiceGenerator({ product }) {
       const ratio = element.offsetHeight / element.offsetWidth;
       const pdfHeight = pdfWidth * ratio;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`Quotation_${product.name.replace(/\s+/g, '_')}.pdf`);
     } catch (error) {
       console.error('Failed to generate PDF:', error);
@@ -94,7 +95,7 @@ export default function InvoiceGenerator({ product }) {
             <div>
               <h3 className="text-xs font-bold uppercase text-gray-400 tracking-widest mb-3">Issued By</h3>
               <p className="font-bold text-lg mb-1">Aldrin Gadget Store</p>
-              <p className="text-gray-600 mb-1">Jakarta, Indonesia</p>
+              <p className="text-gray-600 mb-1">Pekanbaru</p>
               <p className="text-gray-600">WhatsApp: +62 812-6725-0095</p>
               <p className="text-gray-600">Web: aldrin-gadget.com</p>
             </div>
@@ -118,7 +119,6 @@ export default function InvoiceGenerator({ product }) {
             )}
             
             <div className="flex-1">
-              <div className="bg-black text-white px-3 py-1 text-xs font-bold uppercase rounded inline-block mb-3">Unit Baru</div>
               <h3 className="text-3xl font-extrabold text-gray-900 mb-2">{product.name}</h3>
               <p className="text-gray-600 whitespace-pre-line leading-relaxed text-sm mb-4 max-w-lg line-clamp-3">
                 {product.description || 'Tidak ada spesifikasi tambahan.'}

@@ -68,21 +68,45 @@ export default async function TestimonialsPage() {
 
   const displayData = testimonials.length > 0 ? testimonials : dummyData;
 
+  const stats = [
+    { value: `${Math.max(displayData.length, 100)}+`, label: 'Pelanggan Puas' },
+    { value: '5.0', label: 'Rating Rata-rata' },
+    { value: '100%', label: 'Original' },
+    { value: '24/7', label: 'Support' },
+  ];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      
+
       {/* Header Section */}
-      <div className="text-center max-w-2xl mx-auto mb-16">
-        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-sm font-bold tracking-widest mb-6 border border-blue-100 dark:border-blue-900/50 uppercase">
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold tracking-widest mb-6 border border-blue-100 dark:border-blue-900/50 uppercase">
           <ShieldCheck className="w-4 h-4" />
           Wall of Trust
         </div>
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6">
-          Galeri Testimoni
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white mb-6">
+          <span className="text-gradient">Galeri Testimoni</span>
         </h1>
-        <p className="text-lg text-gray-500 dark:text-gray-400">
+        <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
           Ratusan gadget premium telah kami antarkan dengan selamat. Inilah momen kebahagiaan mereka bersama perangkat barunya.
         </p>
+      </div>
+
+      {/* Stats Bar */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto mb-16">
+        {stats.map((s) => (
+          <div
+            key={s.label}
+            className="bg-white/80 dark:bg-[#121212]/80 backdrop-blur rounded-2xl border border-gray-200/70 dark:border-gray-800/70 px-4 py-5 text-center hover:shadow-md transition-shadow"
+          >
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+              {s.value}
+            </div>
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
+              {s.label}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Masonry Grid */}
